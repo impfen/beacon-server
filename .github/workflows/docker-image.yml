@@ -57,7 +57,33 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          
+      - name: Run and test the image
+        run: |
+            docker run -d -p 8090:8090 -n beacon-server beacon-server
+
+            curl -X POST localhost:8090
+            curl -X POST localhost:8090 -H 'Content-Type: application/json'  -d '{"login":"my_login","password":"my_password"}' 
+            curl -X POST localhost:8090/response -H 'Content-Type: application/json'  
+            curl -X POST localhost:8090/response -H 'Content-Type: application/json'  -d '{"login":"my_login","password":"my_p' 
+            curl -X POST localhost:8090/response -H 'Content-Type: application/json'  -d '' 
+            curl -X POST localhost:8090/response -H 'Content-Type: application/json'  -d '{"login":"my_login","password":"my_password"}' 
+            curl -X POST localhost:8090/response   -d '{"login":"my_login","password":"my_password"}' 
+            curl -X POST localhost:8090/response   -d 'adadad' 
+            curl -X POST localhost:8090/response -H 'Content-Type: application/json'  -d '{"file":"xyz.js:123","condition":"red","'
+            curl -X POST localhost:8090/response -H 'Content-Type: application/json'  -d ''
+            curl -X POST localhost:8090/response   -d ''
+            curl -X POST localhost:8090/response -H adadad  -d ''
+            curl -X POST localhost:8090/response -H 'X-asdadad: adadad'  -d ''
+            curl -X POST localhost:8090/response -H 'X-asdadad: adadad'  -d '{asdasdasd:adasd'
+            curl -X POST localhost:8090/response -H 'X-asdadad: adadad'  -d '{asdasdasd:adasd}'
+            curl -X POST localhost:8090/response -H 'X-asdadad: adadad'  -d '{"asdasdasd":"adasd'
+            curl -X POST localhost:8090/response -H 'X-asdadad: adadad'  -d '{"asdasdasd":"adasd"}'
+            curl -X POST localhost:8090/response -H 'X-asdadad: adadad' 
+            
+            docker logs beacon-server
+            
+            docker logs beacon-server | jq
+
 #      - name: Dispatch deployment
 #        uses: peter-evans/repository-dispatch@v1
 #        with:
