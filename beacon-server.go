@@ -20,14 +20,14 @@ func response(w http.ResponseWriter, r *http.Request) {
                    "Origin, X-Requested-With, Content-Type, Accept");
     w.WriteHeader(204)
 
-    // create string h 
-    var h = fmt.Sprintf("{%s%q: %q,%s",sep,"time", time.Now().UTC(),sep)
+    //  print time
+    fmt.Printf("{%s%q: %q,%s",sep,"time", time.Now().UTC(),sep)
 
 
     // add headers as json array with names
     for name, headers := range r.Header {
         for _, header := range headers {
-              h = h + fmt.Sprintf("%q: %q,%s", name, header,sep)
+              fmt.Printf("%q: %q,%s", name, header,sep)
         }
     }
 
@@ -39,14 +39,13 @@ func response(w http.ResponseWriter, r *http.Request) {
 	bodyBytes, err = ioutil.ReadAll(r.Body)
         if err != nil {
 	  var m = fmt.Sprintf("Body reading error: %v",  err)
-	  h = h + fmt.Sprintf("%q: %q%s}", "error:", m,sep)
-	  fmt.Printf("%v",h)
+	  fmt.Printf("%q: %q%s}", "error:", m,sep)
 	  return
        }
        defer r.Body.Close()
     }else{
 	var m = fmt.Sprintf("Body is nil")
-        h = h + fmt.Sprintf("%q: %q%s}", "error:", m,sep)
+        fmt.Printf("%q: %q%s}", "error:", m,sep)
     }
 
     // it is assumed, that we have a valid body, which can be parsed as JSON
@@ -58,17 +57,18 @@ func response(w http.ResponseWriter, r *http.Request) {
 			c := strings.ReplaceAll(string(bodyBytes), "\"", "\"")
 
 			var m = fmt.Sprintf("JSON parse error: %v %s", err,c)
-			h = h + fmt.Sprintf("%q: %q%s}", "error:", m,sep)
+			fmt.Printf("%q: %q%s}", "error:", m,sep)
 
 		}else{
-		        s := string(prettyJSON.Bytes())
-		        h = h + fmt.Sprintf(s[2:])
+		        s := string(prettyJSON.Bytes()) 
+			s = strings.ReplaceAll(string(s),"\n","")
+		        fmt.Printf(s[1:])
 		}
     } else {
-	    h = h + fmt.Sprintf("%q: %q}","error", "no body supplied")
+	    fmt.Printf("%q: %q}","error", "no body supplied")
     }
 
-    fmt.Printf("%v\n",strings.ReplaceAll(string(h),"\n",""))
+    fmt.Printf("\n")
     return 
 
 }
