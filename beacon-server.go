@@ -47,7 +47,6 @@ func response(w http.ResponseWriter, r *http.Request) {
     }else{
 	var m = fmt.Sprintf("Body is nil")
         h = h + fmt.Sprintf("%q: %q%s}", "error:", m,sep)
-
     }
 
     // it is assumed, that we have a valid body, which can be parsed as JSON
@@ -61,15 +60,15 @@ func response(w http.ResponseWriter, r *http.Request) {
 			var m = fmt.Sprintf("JSON parse error: %v %s", err,c)
 			h = h + fmt.Sprintf("%q: %q%s}", "error:", m,sep)
 
-			fmt.Printf("%v",h)
-			return
+		}else{
+		        s := string(prettyJSON.Bytes())
+		        h = h + fmt.Sprintf(s[2:])
 		}
-		h = h + fmt.Sprintf(string(prettyJSON.Bytes())[2:])
     } else {
-	    h = h + fmt.Sprintf("%q: %q%s}","error", "no body supplied",sep)
+	    h = h + fmt.Sprintf("%q: %q}","error", "no body supplied")
     }
 
-    fmt.Printf("%v",h)
+    fmt.Printf("%v\n",strings.ReplaceAll(string(h),"\n",""))
     return 
 
 }
